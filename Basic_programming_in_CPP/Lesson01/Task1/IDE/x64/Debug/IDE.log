@@ -1,5 +1,0 @@
-﻿  IDE.cpp
-C:\Users\Admin\Documents\GitHub\Netology\Basic_programming_in_CPP\Lesson1\Task1\IDE\IDE.cpp(25,27): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Admin\Documents\GitHub\Netology\Basic_programming_in_CPP\Lesson1\Task1\IDE\IDE.cpp(44,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Admin\Documents\GitHub\Netology\Basic_programming_in_CPP\Lesson1\Task1\IDE\IDE.cpp(52,23): warning C4018: <: несоответствие типов со знаком и без знака
-  IDE.vcxproj -> C:\Users\Admin\Documents\GitHub\Netology\Basic_programming_in_CPP\Lesson1\Task1\IDE\x64\Debug\IDE.exe
