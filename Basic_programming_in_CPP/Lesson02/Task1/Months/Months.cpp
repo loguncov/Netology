@@ -1,9 +1,9 @@
 ﻿
 #include <iostream>
 
-enum class Month : uint8_t {
-    Incorrect_Month,
-    January,
+enum class Month {
+
+    January = 1,
     February,
     March,
     April,
@@ -17,40 +17,62 @@ enum class Month : uint8_t {
     December
 };
 
-const char* month_str[] = { "Неизвестный месяц",
-                            "Январь",
-                            "Февраль",
-                            "Март",
-                            "Апрель",
-                            "Май",
-                            "Июнь",
-                            "Июль",
-                            "Август",
-                            "Сентябрь",
-                            "Октябрь",
-                            "Ноябрь",
-                            "Декабрь" };
+int main() {
 
-
-int main()
-{
     setlocale(LC_ALL, "Russian");
 
-    std::cout << "Введите номер месяца : ";
-    while (true) {
-        unsigned month;
-        std::cin >> month;
+    int value = 1;
 
-        if (month > static_cast<int>(Month::December)) {
+    while (value != 0) {
+        std::cout << "Введите номер месяца: ";
+        std::cin >> value;
+
+        if (value > 12) {
             std::cout << "Неправильный номер!" << std::endl;
-            continue;
+        }
+        else if (value < 0) {
+            std::cout << "Неправильный номер!" << std::endl;
         }
 
-        if (month == static_cast<int>(Month::Incorrect_Month)) {
-            std::cout << "До свидания" << std::endl;
+        switch (static_cast<Month>(value)) {
+        case Month::January:
+            std::cout << "Январь" << std::endl;
+            break;
+        case Month::February:
+            std::cout << "Февраль" << std::endl;
+            break;
+        case Month::March:
+            std::cout << "Март" << std::endl;
+            break;
+        case Month::April:
+            std::cout << "Апрель" << std::endl;
+            break;
+        case Month::May:
+            std::cout << "Май" << std::endl;
+            break;
+        case Month::June:
+            std::cout << "Июнь" << std::endl;
+            break;
+        case Month::July:
+            std::cout << "Июль" << std::endl;
+            break;
+        case Month::August:
+            std::cout << "Август" << std::endl;
+            break;
+        case Month::September:
+            std::cout << "Сентябрь" << std::endl;
+            break;
+        case Month::October:
+            std::cout << "Октябрь" << std::endl;
+            break;
+        case Month::November:
+            std::cout << "Ноябрь" << std::endl;
+            break;
+        case Month::December:
+            std::cout << "Декабрь" << std::endl;
             break;
         }
-
-        std::cout << month_str[static_cast<int>(month)] << std::endl;
     }
+
+    std::cout << "До свидания" << std::endl;
 }
