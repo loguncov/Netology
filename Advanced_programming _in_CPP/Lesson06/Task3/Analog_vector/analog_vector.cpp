@@ -111,8 +111,9 @@ int main() {
     std::cout << std::endl;
 
     // создаем второй контейнер и присваиваем ему значения первого контейнера
-    MyVector<int> vec2;
-    vec2 = vec1;
+    //MyVector<int> vec2;
+    //vec2 = vec1;
+    MyVector<int> vec2(vec1);
 
     // выводим элементы второго контейнера на экран
     for (size_t i = 0; i < vec2.size(); ++i) {
