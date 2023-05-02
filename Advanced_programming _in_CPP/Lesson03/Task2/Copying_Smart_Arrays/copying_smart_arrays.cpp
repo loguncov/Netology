@@ -38,37 +38,57 @@ public:
     // добавление элемента в массив
     void add_element(int element)
     {
-        smart_array[logical_size] = element;
-        logical_size += 1;
+        if (logical_size < amount) // проверяем, что есть место для добавления элемента
+        {
+            smart_array[logical_size] = element;
+            logical_size += 1;
+        }
+        else
+        {
+            std::cout << "Ошибка: нет места для добавления элемента" << std::endl;
+        }
     }
 
     // получение элемента массива по индексу
     int get_element(int index)
     {
-        int element = smart_array[index];
-        return element;
+        if (index >= 0 && index < logical_size) // проверяем, что индекс в диапазоне массива
+        {
+            int element = smart_array[index];
+            return element;
+        }
+        else
+        {
+            std::cout << "Индекс вне диапазона ";
+            return -1;
+        }
     }
 
     // оператор присваивания
     Smart_Array operator=(const Smart_Array& other)
     {
-        logical_size = other.logical_size; // копируем размер текущего массива
-        amount = other.amount; // копируем размер выделенной памяти
-        delete[] smart_array; // удаляем старую выделенную память
-        smart_array = new int[amount]; // выделяем новую память
-        for (int i = 0; i < logical_size; ++i)
+        if (this != &other) // проверяем, что мы не присваиваем объект самому себе
         {
-            smart_array[i] = other.smart_array[i]; // копируем элементы из оригинального массива в новый
+            logical_size = other.logical_size; // копируем размер текущего массива
+            amount = other.amount; // копируем размер выделенной памяти
+            delete[] smart_array; // удаляем старую выделенную память
+            smart_array = new int[amount]; // выделяем новую память
+            for (int i = 0; i < logical_size; ++i)
+            {
+                smart_array[i] = other.smart_array[i]; // копируем элементы из оригинального массива в новый
+            }
         }
 
         return *this;
+
     }
+    
 
 };
 
 int main()
 {
-    Smart_Array arr(5);
+    Smart_Array arr(2);
     arr.add_element(1);
     arr.add_element(4);
     arr.add_element(155);
