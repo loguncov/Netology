@@ -4,7 +4,7 @@ project(tridiagonal_matrix_clone)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(tridiagonal_matrix_clone tridiagonal_matrix_clone.cpp)
+add_executable(tridiagonal_matrix_clone src/tridiagonal_matrix_clone.cpp)
 
 target_compile_options(tridiagonal_matrix_clone PRIVATE -Wall -Wextra -pedantic)
 
