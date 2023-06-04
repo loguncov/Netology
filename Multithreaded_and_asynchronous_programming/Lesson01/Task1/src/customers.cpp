@@ -49,8 +49,8 @@ void operatorThread()
 int main()
 {
     // Создаем потоки для клиента и операциониста
-    std::thread clientThreadObj(clientThread);  // Переименуйте объект в clientThreadObj
-    std::thread operatorThreadObj(operatorThread);  // Переименуйте объект в operatorThreadObj
+    std::thread clientThreadObj(clientThread);
+    std::thread operatorThreadObj(operatorThread);
 
     // Ждем, пока потоки завершатся
     clientThreadObj.join();
