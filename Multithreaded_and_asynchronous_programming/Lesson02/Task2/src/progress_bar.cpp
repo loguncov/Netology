@@ -3,77 +3,82 @@
 #include <chrono>
 #include <mutex>
 #include <vector>
+#include <atomic>
 
-const int numThreads = 4;    // Количество потоков
-const int calculationLength = 100;  // Длина расчета
+const int numThreads = 4;
+const int calculationLength = 100;
 
-std::mutex outputMutex;  // Мьютекс для синхронизации вывода в консоль
+std::mutex outputMutex;
+std::vector<std::atomic<int>> threadProgresses(numThreads);  // Вектор атомарных переменных для отслеживания прогресса каждого потока
+std::vector<std::thread::id> threadIds(numThreads);  // Вектор идентификаторов потоков
+std::vector<std::chrono::time_point<std::chrono::steady_clock>> threadStartTimes(numThreads), threadEndTimes(numThreads);  // Вектор временных точек для отслеживания времени начала и окончания выполнения каждого потока
+std::atomic<bool> isRunning(true);  // Флаг для контроля выполнения программы
 
-// Функция, имитирующая расчет в потоке
+// Функция, выполняемая в каждом потоке для выполнения задачи
 void calculationThread(int threadNumber)
 {
-    // Генерируем случайное время для имитации расчета
-    int calculationTime = std::rand() % 500 + 500;
+    threadStartTimes[threadNumber - 1] = std::chrono::steady_clock::now();  // Записываем время начала выполнения потока
+    threadIds[threadNumber - 1] = std::this_thread::get_id();  // Записываем идентификатор потока
 
-    // Заполняющийся индикатор (прогресс-бар)
-    int progress = 0;
-    int progressMax = calculationLength;
-
-    // Получаем идентификатор потока
-    std::thread::id threadId = std::this_thread::get_id();
-
-    // Засекаем время начала работы потока
-    auto startTime = std::chrono::steady_clock::now();
-
-    // Имитация расчета
+    int calculationTime = std::rand() % 500 + 5000;  // Генерируем случайное время выполнения для потока
     for (int i = 0; i < calculationLength; ++i)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(calculationTime / calculationLength));
-
-        {
-            std::lock_guard<std::mutex> lock(outputMutex);
-
-            // Вывод информации о потоке и прогрессе
-            std::cout << "Поток " << threadNumber << " (ID: " << threadId << "): [";
-            for (int j = 0; j < progress; ++j)
-            {
-                std::cout << "=";
-            }
-            std::cout << ">" << std::string(progressMax - progress, ' ') << "] " << progress * 100 / calculationLength << "%" << std::endl;
-
-            ++progress;
-        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(calculationTime / calculationLength));  // Имитируем выполнение задачи путем задержки потока
+        ++threadProgresses[threadNumber - 1];  // Увеличиваем прогресс выполнения потока
     }
 
-    // Засекаем время окончания работы потока
-    auto endTime = std::chrono::steady_clock::now();
-
-    // Вычисляем суммарное время работы потока
-    auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-
-    {
-        std::lock_guard<std::mutex> lock(outputMutex);
-        // Вывод суммарного времени работы потока
-        std::cout << "Поток " << threadNumber << " (ID: " << threadId << ") завершил работу. Время работы: " << totalTime.count() << " мс" << std::endl;
-    }
+    threadEndTimes[threadNumber - 1] = std::chrono::steady_clock::now();  // Записываем время окончания выполнения потока
 }
 
+// Функция, выполняющаяся в отдельном потоке для отображения прогресса выполнения
+void progressBarThread()
+{
+    while (isRunning)
+    {
+        std::lock_guard<std::mutex> lock(outputMutex);
+        std::cout << "\033[2J\033[1;1H";
+        std::cout << "#         ID                                           Полоса прогресса                                                                    Время" << std::endl;
+
+        for (int i = 0; i < numThreads; ++i)
+        {
+            int progress = threadProgresses[i];  // Получаем прогресс выполнения потока
+            int progressMax = calculationLength;  // Максимальное значение прогресса
+
+            std::chrono::duration<double, std::chrono::seconds::period> elapsed_seconds = threadEndTimes[i] == std::chrono::time_point<std::chrono::steady_clock>() ?
+                                                                                        std::chrono::steady_clock::now() - threadStartTimes[i] :
+                                                                                        threadEndTimes[i] - threadStartTimes[i];  // Вычисляем время выполнения потока
+
+            double elapsed_time = elapsed_seconds.count();  // Получаем время выполнения в секундах
+
+            std::cout << (i + 1) << "  " << threadIds[i] << "  [";  // Выводим номер потока и его идентификатор
+            for (int j = 0; j < progress; ++j)
+            {
+                std::cout << "=";  // Выводим символы '=' для обозначения прогресса выполнения
+            }
+            std::cout << ">" << std::string(progressMax - progress, ' ') << "] " << progress * 100 / calculationLength << "%" << " Время выполнения: " << elapsed_time << "с" << std::endl;  // Выводим информацию о прогрессе и времени выполнения
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Задержка перед обновлением прогресса
+    }
+}
 
 int main()
 {
     std::vector<std::thread> threads;
-
-    // Запуск потоков
     for (int i = 1; i <= numThreads; ++i)
     {
-        threads.emplace_back(calculationThread, i);
+        threads.emplace_back(calculationThread, i);  // Создаем и запускаем потоки выполнения задач
     }
 
-    // Ожидание завершения потоков
+    std::thread progressThread(progressBarThread);  // Создаем и запускаем поток для отображения прогресса выполнения
+
     for (auto& thread : threads)
     {
-        thread.join();
+        thread.join();  // Дожидаемся окончания выполнения всех потоков
     }
+
+    isRunning = false;  // Устанавливаем флаг, чтобы завершить поток отображения прогресса
+    progressThread.join();  // Дожидаемся окончания выполнения потока отображения прогресса
 
     return 0;
 }
