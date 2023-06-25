@@ -8,6 +8,7 @@ Shape::Shape(ShapeType type, int x1, int y1, int z1, int x2, int y2, int z2,
              int x7, int y7, int z7, int x8, int y8, int z8)
     : type(type)
 {
+    // Заполнение массива координат
     coordinates[0][0] = x1;
     coordinates[0][1] = y1;
     coordinates[0][2] = z1;
@@ -32,7 +33,60 @@ Shape::Shape(ShapeType type, int x1, int y1, int z1, int x2, int y2, int z2,
     coordinates[7][0] = x8;
     coordinates[7][1] = y8;
     coordinates[7][2] = z8;
+
+    calculateSquare(); // Вычисление площади фигуры
+    calculateVolume(); // Вычисление объема фигуры
 }
 
-// Методы класса Shape
-// ...
+void Shape::calculateSquare()
+{
+    int a, b, c;
+    switch (type)
+    {
+    case ShapeType::Line:
+        square = 0;
+        break;
+    case ShapeType::Rectangle:
+        a = std::abs(coordinates[0][0] - coordinates[1][0]);
+        b = std::abs(coordinates[0][1] - coordinates[1][1]);
+        square = a * b;
+        break;
+    case ShapeType::Parallelepiped:
+        a = std::abs(coordinates[0][0] - coordinates[1][0]);
+        b = std::abs(coordinates[0][1] - coordinates[1][1]);
+        c = std::abs(coordinates[0][2] - coordinates[1][2]);
+        square = 2 * a * b + 2 * a * c + 2 * b * c;
+        break;
+    }
+}
+
+void Shape::calculateVolume()
+{
+    int a, b, c;
+    switch (type)
+    {
+    case ShapeType::Line:
+        volume = 0;
+        break;
+    case ShapeType::Rectangle:
+        volume = 0;
+        break;
+    case ShapeType::Parallelepiped:
+        a = std::abs(coordinates[0][0] - coordinates[1][0]);
+        b = std::abs(coordinates[0][1] - coordinates[1][1]);
+        c = std::abs(coordinates[0][2] - coordinates[1][2]);
+        volume = a * b * c;
+        break;
+    }
+}
+
+int Shape::getCoordinate(int index, int axis) const
+{
+    return coordinates[index][axis];
+}
+
+void Shape::setCoordinate(int index, int axis, int value)
+{
+    coordinates[index][axis] = value;
+}
+

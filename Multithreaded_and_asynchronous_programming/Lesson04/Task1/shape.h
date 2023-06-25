@@ -11,11 +11,19 @@ public:
           int x7 = 0, int y7 = 0, int z7 = 0, int x8 = 0, int y8 = 0, int z8 = 0);
 
     ShapeType getType() const { return type; }
+    double getSquare() const { return square; } // Добавлено объявление для square
+    double getVolume() const { return volume; } // Добавлено объявление для volume
+
+    void calculateSquare();
+    void calculateVolume();
+
+    int getCoordinate(int index, int axis) const;
+    void setCoordinate(int index, int axis, int value);
 
 private:
     ShapeType type;
     int coordinates[8][3]; // Массив для хранения координат вершин фигуры
+    double square; // Добавлено объявление для square
+    double volume; // Добавлено объявление для volume
 };
 
-// Заголовки методов класса Shape
-// ...

@@ -9,12 +9,69 @@ Shape Transform::shift(int offsetX, int offsetY, int offsetZ)
 {
     for (int i = 0; i < 8; ++i)
     {
-        shape.coordinates[i][0] += offsetX;
-        shape.coordinates[i][1] += offsetY;
-        shape.coordinates[i][2] += offsetZ;
+        int x = shape.getCoordinate(i, 0);
+        int y = shape.getCoordinate(i, 1);
+        int z = shape.getCoordinate(i, 2);
+
+        x += offsetX;
+        y += offsetY;
+        z += offsetZ;
+
+        shape.setCoordinate(i, 0, x);
+        shape.setCoordinate(i, 1, y);
+        shape.setCoordinate(i, 2, z);
     }
     return shape;
 }
 
-// Методы класса Transform
-// ...
+Shape Transform::scaleX(int scale)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        int x = shape.getCoordinate(i, 0);
+        x *= scale;
+        shape.setCoordinate(i, 0, x);
+    }
+    return shape;
+}
+
+Shape Transform::scaleY(int scale)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        int y = shape.getCoordinate(i, 1);
+        y *= scale;
+        shape.setCoordinate(i, 1, y);
+    }
+    return shape;
+}
+
+Shape Transform::scaleZ(int scale)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        int z = shape.getCoordinate(i, 2);
+        z *= scale;
+        shape.setCoordinate(i, 2, z);
+    }
+    return shape;
+}
+
+Shape Transform::scale(int scale)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        int x = shape.getCoordinate(i, 0);
+        int y = shape.getCoordinate(i, 1);
+        int z = shape.getCoordinate(i, 2);
+
+        x /= scale;
+        y /= scale;
+        z /= scale;
+
+        shape.setCoordinate(i, 0, x);
+        shape.setCoordinate(i, 1, y);
+        shape.setCoordinate(i, 2, z);
+    }
+    return shape;
+}
