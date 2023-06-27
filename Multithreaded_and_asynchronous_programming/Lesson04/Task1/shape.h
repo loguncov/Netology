@@ -1,29 +1,54 @@
 #pragma once
 
-enum class ShapeType { Line, Rectangle, Parallelepiped };
-
 class Shape
 {
 public:
-    Shape(ShapeType type, int x1, int y1, int z1, int x2, int y2, int z2,
-          int x3 = 0, int y3 = 0, int z3 = 0, int x4 = 0, int y4 = 0, int z4 = 0,
-          int x5 = 0, int y5 = 0, int z5 = 0, int x6 = 0, int y6 = 0, int z6 = 0,
-          int x7 = 0, int y7 = 0, int z7 = 0, int x8 = 0, int y8 = 0, int z8 = 0);
+    virtual double calculateSquare() const = 0;
+    virtual double calculateVolume() const = 0;
+    virtual int getCoordinate(int index, int axis) const = 0;
+    virtual void setCoordinate(int index, int axis, int value) = 0;
+};
 
-    ShapeType getType() const { return type; }
-    double getSquare() const { return square; } // Добавлено объявление для square
-    double getVolume() const { return volume; } // Добавлено объявление для volume
-
-    void calculateSquare();
-    void calculateVolume();
-
-    int getCoordinate(int index, int axis) const;
-    void setCoordinate(int index, int axis, int value);
+class Line : public Shape
+{
+public:
+    Line(int x1, int y1, int z1, int x2, int y2, int z2);
+    virtual double calculateSquare() const override;
+    virtual double calculateVolume() const override;
+    virtual int getCoordinate(int index, int axis) const override;
+    virtual void setCoordinate(int index, int axis, int value) override;
 
 private:
-    ShapeType type;
-    int coordinates[8][3]; // Массив для хранения координат вершин фигуры
-    double square; // Добавлено объявление для square
-    double volume; // Добавлено объявление для volume
+    int coordinates[2][3];
+};
+
+class Rectangle : public Shape
+{
+public:
+    Rectangle(int x1, int y1, int z1, int x2, int y2, int z2, 
+              int x3, int y3, int z3, int x4, int y4, int z4);
+    virtual double calculateSquare() const override;
+    virtual double calculateVolume() const override;
+    virtual int getCoordinate(int index, int axis) const override;
+    virtual void setCoordinate(int index, int axis, int value) override;
+
+private:
+    int coordinates[4][3];
+};
+
+class Parallelepiped : public Shape
+{
+public:
+    Parallelepiped(int x1, int y1, int z1, int x2, int y2, int z2,
+                   int x3, int y3, int z3, int x4, int y4, int z4,
+                   int x5, int y5, int z5, int x6, int y6, int z6,
+                   int x7, int y7, int z7, int x8, int y8, int z8);
+    virtual double calculateSquare() const override;
+    virtual double calculateVolume() const override;
+    virtual int getCoordinate(int index, int axis) const override;
+    virtual void setCoordinate(int index, int axis, int value) override;
+
+private:
+    int coordinates[8][3];
 };
 

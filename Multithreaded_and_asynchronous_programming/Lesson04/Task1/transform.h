@@ -4,14 +4,13 @@
 class Transform
 {
 public:
-    Transform(const Shape& shape);
-    Shape shift(int offsetX, int offsetY, int offsetZ);
-    Shape scaleX(int scale);
-    Shape scaleY(int scale);
-    Shape scaleZ(int scale);
-    Shape scale(int scale);
+    Transform(Shape* shape);
+    void shift(int offsetX, int offsetY, int offsetZ);
+    void scaleX(int scale);
+    void scaleY(int scale);
+    void scaleZ(int scale);
+    void scale(int scale);
 
 private:
-    Shape shape;
+    Shape* shape;
 };
-
