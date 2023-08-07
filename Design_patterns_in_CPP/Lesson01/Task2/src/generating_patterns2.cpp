@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <map>
 
 class SqlSelectQueryBuilder {
 public:
@@ -53,6 +54,20 @@ public:
         return query.str();
     }
 
+    // Добавить несколько условий WHERE в запрос
+    SqlSelectQueryBuilder& AddWhere(const std::map<std::string, std::string>& kv) noexcept {
+        for (const auto& pair : kv) {
+            whereClauses.push_back(pair.first + "=" + pair.second);
+        }
+        return *this;
+    }
+
+    // Добавить несколько столбцов в запрос
+    SqlSelectQueryBuilder& AddColumns(const std::vector<std::string>& columns) noexcept {
+        this->columns = columns;
+        return *this;
+    }
+
 private:
     std::vector<std::string> columns; // Вектор столбцов, которые будут добавлены в запрос
     std::string from; // Имя таблицы, из которой будет производиться выборка
@@ -61,9 +76,19 @@ private:
 
 int main() {
     SqlSelectQueryBuilder query_builder;
-    query_builder.AddColumn("name").AddColumn("phone");
+    
+    // Добавляем несколько столбцов
+    std::vector<std::string> selectedColumns = {"name", "phone", "email"};
+    query_builder.AddColumns(selectedColumns);
+    
     query_builder.AddFrom("students");
-    query_builder.AddWhere("id", "42").AddWhere("name", "John");
+    
+    // Добавляем несколько условий WHERE
+    std::map<std::string, std::string> whereConditions = {
+        {"id", "42"},
+        {"name", "John"}
+    };
+    query_builder.AddWhere(whereConditions);
     
     std::cout << query_builder.BuildQuery() << std::endl;
 
